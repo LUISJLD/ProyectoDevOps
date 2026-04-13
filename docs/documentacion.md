@@ -169,8 +169,6 @@ Esta arquitectura permite una separación clara de responsabilidades, facilitand
 
 ---
 
----
-
 ##  8. Conclusión
 
 El sistema está diseñado bajo buenas prácticas de desarrollo, seguridad y escalabilidad.  

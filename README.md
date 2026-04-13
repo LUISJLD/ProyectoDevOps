@@ -94,4 +94,4 @@ docker-compose up --build
 
 La documentación detallada del sistema (requerimientos funcionales, no funcionales y backlog) se encuentra en:
 
-📄 [docs/requerimientos.md](docs/requerimientos.md)
+📄 [docs/requerimientos.md](docs/documentacion.md)

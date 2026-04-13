@@ -90,26 +90,84 @@ A continuación se muestra el diseño de la base de datos del sistema:
 ![Modelo de Base de Datos](../docs/db.png)
 
 ---
+## 7. Arquitectura Tecnológica
 
-##  7. Arquitectura Tecnológica
+La arquitectura del sistema sigue un enfoque desacoplado basado en servicios, donde el backend expone una API REST consumida por un frontend independiente.
 
-### Backend
+---
+
+###  Backend
+
 - Spring Boot  
 - Spring Security  
 - JWT  
 
-### Persistencia
+El backend está construido como una API REST encargada de la lógica de negocio, autenticación, autorización y gestión de usuarios.
+
+---
+
+###  Seguridad
+
+- Spring Security  
+- JWT (JSON Web Tokens)  
+
+Se implementa autenticación basada en tokens, permitiendo un sistema seguro, escalable y sin estado (stateless).  
+El acceso a los recursos está controlado mediante roles de usuario.
+
+---
+
+###  Persistencia
+
 - Spring Data JPA  
 - Hibernate  
 
-### Base de Datos
-- PostgreSQL (Supabase)  
+Se utiliza un enfoque ORM para mapear entidades a la base de datos, facilitando el manejo de datos y reduciendo la complejidad del acceso a información.
 
-### Despliegue
-- Render  
+---
 
-### Frontend
+###  Base de Datos
+
+- PostgreSQL  
+- Supabase  
+
+La base de datos se encuentra en la nube mediante Supabase, permitiendo acceso remoto, escalabilidad y facilidad de configuración.
+
+---
+
+###  Frontend
+
 - React.js  
+
+El frontend está desarrollado como una aplicación independiente que consume la API REST del backend, permitiendo una experiencia de usuario dinámica e interactiva.
+
+---
+
+###  Contenerización
+
+- Docker  
+
+Se utiliza Docker para empaquetar la aplicación y sus dependencias en contenedores, asegurando consistencia en los entornos de desarrollo y facilitando la portabilidad del sistema.
+
+---
+
+###  Control de Versiones
+
+- Git  
+- GitFlow  
+
+El proyecto utiliza GitFlow para organizar el desarrollo colaborativo mediante ramas `main`, `develop` y `feature/*`, asegurando un flujo de integración ordenado.
+
+---
+
+###  Integración General
+
+El sistema funciona bajo el siguiente flujo:
+
+Frontend (React) → API REST (Spring Boot) → Base de Datos (PostgreSQL)
+
+Esta arquitectura permite una separación clara de responsabilidades, facilitando el mantenimiento, la escalabilidad y la evolución del sistema.
+
+---
 
 ---
 

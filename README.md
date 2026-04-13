@@ -51,6 +51,7 @@ Además, el equipo cuenta con conocimientos previos en estas tecnologías, lo qu
 5. **PBI 5:** Validación de unicidad del correo electrónico y verificación de campos obligatorios.  
 6. **PBI 6:** Implementación de la funcionalidad de activación e inactivación de cuentas de usuario.  
 
+Los PBIs fueron desglosados en historias de usuario (US) y tareas técnicas (TK), las cuales fueron gestionadas como Issues dentro de GitHub.
 Los PBIs detallados se gestionan en GitHub Projects/Issues.
 
 ---

@@ -1,22 +1,86 @@
-# Sistema de Gesti髇 de Eventos - Proyecto DevOps
+# Sistema de Gesti贸n de Eventos - Proyecto DevOps
 
-## Stack Tecnol骻ico Seleccionado
-* **Backend:** Java con Spring Boot (Maven)
-* **Frontend:** React.js
-* **Base de Datos:** MySQL / PostgreSQL
-* **Control de Versiones:** Git con flujo GitFlow
+## Repositorio
 
-## Backlog Inicial (PBIs - M骴ulo de Usuarios)
-1. **PBI 1:** Configuraci髇 inicial del proyecto Spring Boot y conexi髇 a la BD.
-2. **PBI 2:** Creaci髇 del modelo de datos para la entidad 'User'.
-3. **PBI 3:** Implementaci髇 del registro de nuevos usuarios con contrase馻s cifradas.
-4. **PBI 4:** Implementaci髇 de autenticaci髇 basada en roles (Login).
-5. **PBI 5:** Validaci髇 de unicidad de correo electr髇ico y campos obligatorios.
-6. **PBI 6:** Funcionalidad de activaci髇 e inactivaci髇 de cuentas.
+馃敆 https://github.com/LUISJLD/ProyectoDevOps.git
+
+## Integrantes
+- Juan Pablo Tamara
+- Daniel Bocachica
+- Jeferson Fl贸rez
+- Luis David P茅rez
+
+---
+
+## Stack Tecnol贸gico
+
+- **Backend:** Java con Spring Boot (Maven)
+- **Seguridad:** Spring Security + JWT
+- **Persistencia:** Spring Data JPA (Hibernate)
+- **Frontend:** React.js
+- **Base de Datos:** PostgreSQL
+- **Control de Versiones:** Git (GitFlow)
+
+---
+
+## Justificaci贸n del Stack
+
+Se seleccion贸 este stack tecnol贸gico por su robustez, escalabilidad y compatibilidad con el desarrollo de aplicaciones modernas.  
+Spring Boot permite construir APIs seguras y estructuradas, React facilita la creaci贸n de interfaces din谩micas, y PostgreSQL garantiza una gesti贸n eficiente de datos.  
+Adem谩s, el equipo cuenta con conocimientos previos en estas tecnolog铆as, lo que permite un desarrollo m谩s 谩gil y mantenible.
+
+---
+
+## Estructura del Proyecto
+
+- `backend/`: API desarrollada con Spring Boot  
+- `frontend/`: Aplicaci贸n cliente en React  
+- `docs/`: Documentaci贸n del sistema  
+
+---
+
+## Backlog Inicial (PBIs - M贸dulo de Usuarios)
+
+1. **PBI 1:** Configuraci贸n inicial del proyecto Spring Boot y establecimiento de la conexi贸n con la base de datos.  
+2. **PBI 2:** Creaci贸n del modelo de datos para la entidad `User` y su respectiva persistencia.  
+3. **PBI 3:** Implementaci贸n del registro de usuarios con almacenamiento seguro de contrase帽as (cifrado).  
+4. **PBI 4:** Implementaci贸n del inicio de sesi贸n mediante autenticaci贸n basada en roles.  
+5. **PBI 5:** Validaci贸n de unicidad del correo electr贸nico y verificaci贸n de campos obligatorios.  
+6. **PBI 6:** Implementaci贸n de la funcionalidad de activaci贸n e inactivaci贸n de cuentas de usuario.  
+
+Los PBIs detallados se gestionan en GitHub Projects/Issues.
+
+---
 
 ## Definition of Done (DoD)
-* El c骴igo debe compilar correctamente sin errores.
-* Cada funcionalidad debe estar en una rama 'feature/*' antes de integrarse a 'develop'.
-* Uso de variables de entorno para datos sensibles (.env).
-* Las APIs deben estar probadas (Postman o Swagger).
-* Commits descriptivos siguiendo el est醤dar 'feat:', 'fix:', o 'chore:'.
+
+- El c贸digo compila y ejecuta sin errores.  
+- Cada funcionalidad se desarrolla en una rama `feature/*` antes de integrarse a `develop`.  
+- El c贸digo no rompe la estabilidad de la rama `develop`.  
+- Uso de variables de entorno para datos sensibles.  
+- Las APIs son probadas mediante herramientas como Postman o Swagger.  
+- Los commits son descriptivos (`feat:`, `fix:`, `chore:`).  
+- La funcionalidad cumple con los criterios definidos en el PBI.  
+
+---
+
+## Ejecuci贸n del Proyecto
+1. Clonar el repositorio:
+git clone URL_DEL_REPOSITORIO
+
+### Backend (Spring Boot)
+cd backend
+./mvnw spring-boot:run
+
+### Frontend (React)
+cd frontend
+npm install
+npm start
+
+---
+
+## Documentaci贸n
+
+La documentaci贸n detallada del sistema (requerimientos funcionales, no funcionales y backlog) se encuentra en:
+
+馃搫 `docs/requerimientos.md`

@@ -14,12 +14,15 @@
 
 ## Stack Tecnológico
 
-- **Backend:** Java con Spring Boot (Maven)
+- **Backend:** Spring Boot
 - **Seguridad:** Spring Security + JWT
 - **Persistencia:** Spring Data JPA (Hibernate)
-- **Frontend:** React.js
 - **Base de Datos:** PostgreSQL
+- **Infraestructura BD:** Supabase
+- **Frontend:** React.js
+-  **Docker**
 - **Control de Versiones:** Git (GitFlow)
+
 
 ---
 
@@ -66,7 +69,7 @@ Los PBIs detallados se gestionan en GitHub Projects/Issues.
 
 ## Ejecución del Proyecto
 1. Clonar el repositorio:
-git clone URL_DEL_REPOSITORIO
+git clone  https://github.com/LUISJLD/ProyectoDevOps.git
 
 ### Backend (Spring Boot)
 cd backend
@@ -83,4 +86,8 @@ npm start
 
 La documentación detallada del sistema (requerimientos funcionales, no funcionales y backlog) se encuentra en:
 
-📄 `docs/requerimientos.md`
+## Documentación
+
+La documentación detallada del sistema (requerimientos funcionales, no funcionales y backlog) se encuentra en:
+
+📄 [docs/requerimientos.md](docs/requerimientos.md)

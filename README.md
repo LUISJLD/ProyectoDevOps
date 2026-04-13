@@ -20,7 +20,7 @@
 - **Base de Datos:** PostgreSQL
 - **Infraestructura BD:** Supabase
 - **Frontend:** React.js
--  **Docker**
+- **Contenerización:** Docker
 - **Control de Versiones:** Git (GitFlow)
 
 
@@ -69,22 +69,26 @@ Los PBIs detallados se gestionan en GitHub Projects/Issues.
 
 ## Ejecución del Proyecto
 1. Clonar el repositorio:
-git clone  https://github.com/LUISJLD/ProyectoDevOps.git
-
+  ```bash
+  git clone  https://github.com/LUISJLD/ProyectoDevOps.git
+  ```
 ### Backend (Spring Boot)
-cd backend
-./mvnw spring-boot:run
-
+ ```bash
+  cd backend
+  ./mvnw spring-boot:run
+ ```
 ### Frontend (React)
-cd frontend
-npm install
-npm start
+ ```bash
+  cd frontend
+  npm install
+  npm start
+ ```
+### Ejecución con Docker (Opcional)
+ ```
+docker-compose up --build
+ ```
 
 ---
-
-## Documentación
-
-La documentación detallada del sistema (requerimientos funcionales, no funcionales y backlog) se encuentra en:
 
 ## Documentación
 

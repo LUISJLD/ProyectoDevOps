@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Set;
 
+
+
 public interface IUserService {
 
     UserResponse register(RegisterRequest request);
@@ -16,19 +18,5 @@ public interface IUserService {
 
     UserResponse getUserById(Long id);
 
-    UserResponse updateUser(Long id, UpdateUserRequest request);
-
-    void deleteUser(Long id);
-
-    UserResponse activateUser(Long id);
-
-    UserResponse deactivateUser(Long id);
-
     UserResponse assignRoles(Long id, Set<String> roles);
-
-    boolean existsByEmail(String email);
-
-    void registerFailedAttempt(String email);
-
-    void unlockAccount(String email);
 }

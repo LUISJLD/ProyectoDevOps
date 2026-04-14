@@ -1,7 +1,6 @@
 package com.backend.demo.service.impl;
 
 import com.backend.demo.dto.request.RegisterRequest;
-import com.backend.demo.dto.request.UpdateUserRequest;
 import com.backend.demo.dto.response.UserResponse;
 import com.backend.demo.exception.ResourceNotFoundException;
 import com.backend.demo.model.entity.Role;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.backend.demo.exception.EmailAlreadyExistsException;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -26,13 +26,12 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-
     // REGISTRO
     @Override
     public UserResponse register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("El correo ya está registrado: " + request.getEmail());
+            throw new EmailAlreadyExistsException("El correo ya está registrado: " + request.getEmail());
         }
 
         User user = new User();
@@ -56,7 +55,6 @@ public class UserServiceImpl implements IUserService {
                 .map(this::mapToResponse);
     }
 
-
     // BUSCAR POR ID
 
     @Override
@@ -74,12 +72,11 @@ public class UserServiceImpl implements IUserService {
         Set<Role> roles = roleNames.stream()
                 .map(name -> {
                     try {
-                        com.backend.demo.model.enums.ERole eRole =
-                                com.backend.demo.model.enums.ERole.valueOf("ROLE_" + name.toUpperCase());
+                        com.backend.demo.model.enums.ERole eRole = com.backend.demo.model.enums.ERole
+                                .valueOf("ROLE_" + name.toUpperCase());
 
                         return roleRepository.findByName(eRole)
-                                .orElseThrow(() ->
-                                        new RuntimeException("Rol no encontrado: " + name));
+                                .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + name));
 
                     } catch (IllegalArgumentException e) {
                         throw new RuntimeException("Rol no válido: " + name);
@@ -91,12 +88,11 @@ public class UserServiceImpl implements IUserService {
 
         return mapToResponse(userRepository.save(user));
     }
+
     private User findUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + id));
     }
-
 
     // MAPPER
     private UserResponse mapToResponse(User user) {
@@ -110,8 +106,7 @@ public class UserServiceImpl implements IUserService {
         response.setRoles(
                 user.getRoles().stream()
                         .map(r -> r.getName().name())
-                        .collect(java.util.stream.Collectors.toSet())
-        );
+                        .collect(java.util.stream.Collectors.toSet()));
         return response;
     }
 }

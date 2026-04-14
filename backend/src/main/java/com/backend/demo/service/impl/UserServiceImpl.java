@@ -56,13 +56,6 @@ public class UserServiceImpl implements IUserService {
                 .map(this::mapToResponse);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<UserResponse> getAllUsers(String nombre, ERole rol, Pageable pageable) {
-        return userRepository.findByNombreAndRol(nombre, rol, pageable)
-                .map(this::mapToResponse);
-    }
-
 
     // BUSCAR POR ID
 
@@ -72,29 +65,6 @@ public class UserServiceImpl implements IUserService {
         return mapToResponse(findUserById(id));
     }
 
-    // ACTUALIZAR USUARIO
-    @Override
-    public UserResponse updateUser(Long id, UpdateUserRequest request) {
-        User user = findUserById(id);
-
-        if (request.getNombre() != null && !request.getNombre().isBlank()) {
-            user.setNombre(request.getNombre());
-        }
-        if (request.getApellido() != null && !request.getApellido().isBlank()) {
-            user.setApellido(request.getApellido());
-        }
-        if (request.getTelefono() != null && !request.getTelefono().isBlank()) {
-            user.setTelefono(request.getTelefono());
-        }
-        if (request.getEmail() != null && !request.getEmail().isBlank()) {
-            if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
-                throw new RuntimeException("El correo ya está registrado: " + request.getEmail());
-            }
-            user.setEmail(request.getEmail());
-        }
-
-        return mapToResponse(userRepository.save(user));
-    }
 
     // ELIMINAR USUARIO
     @Override

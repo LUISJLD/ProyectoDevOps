@@ -32,4 +32,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
             @Param("apellido") String apellido,
             Pageable pageable
     );
+
+    // Consulta para buscar usuarios filtrando por nombre y rol.
+    // Los parámetros NULL se ignoran en los filtros.
+    @Query("SELECT DISTINCT u FROM User u LEFT JOIN u.roles r WHERE " +
+            "(:nombre IS NULL OR LOWER(u.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))) AND " +
+            "(:rol IS NULL OR r.name = :rol)")
+    Page<User> findByNombreAndRol(
+            @Param("nombre") String nombre,
+            @Param("rol") com.backend.demo.model.enums.ERole rol,
+            Pageable pageable
+    );
 }

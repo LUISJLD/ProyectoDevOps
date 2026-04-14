@@ -1,14 +1,19 @@
 package com.backend.demo.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AssignRolesRequest {
 
     @NotEmpty(message = "Debe proporcionar al menos un rol")
     private Set<String> roles;
-
-    public Set<String> getRoles() { return roles; }
-    public void setRoles(Set<String> roles) { this.roles = roles; }
 }

@@ -7,6 +7,7 @@ import com.backend.demo.model.entity.Role;
 import com.backend.demo.model.enums.ERole;
 import com.backend.demo.repository.RoleRepository;
 import com.backend.demo.service.IRoleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +17,9 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class RoleServiceImpl implements IRoleService {
-
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public RoleResponse createRole(String roleName) {
@@ -27,7 +27,11 @@ public class RoleServiceImpl implements IRoleService {
         if (roleRepository.findByName(eRole).isPresent()) {
             throw new BadRequestException("El rol ya existe: " + roleName);
         }
-        Role saved = roleRepository.save(new Role(eRole));
+        Role saved = roleRepository.save(
+                Role.builder()
+                        .name(eRole)
+                        .build()
+        );
         return mapToResponse(saved);
     }
 

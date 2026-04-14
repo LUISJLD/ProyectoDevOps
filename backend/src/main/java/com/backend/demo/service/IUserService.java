@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.List;
 
 
+
+
 public interface IUserService {
 
     UserResponse register(RegisterRequest request);
@@ -18,14 +20,6 @@ public interface IUserService {
     Page<UserResponse> getAllUsers(String nombre, String apellido, Pageable pageable);
 
     UserResponse getUserById(Long id);
-
-    UserResponse updateUser(Long id, UpdateUserRequest request);
-
-    void deleteUser(Long id);
-
-    UserResponse activateUser(Long id);
-
-    UserResponse deactivateUser(Long id);
 
     UserResponse assignRoles(Long id, Set<String> roles);
 

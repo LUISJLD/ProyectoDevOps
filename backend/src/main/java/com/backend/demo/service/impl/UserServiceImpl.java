@@ -4,6 +4,7 @@ import com.backend.demo.dto.request.RegisterRequest;
 import com.backend.demo.dto.request.UpdateUserRequest;
 import com.backend.demo.dto.response.UserActionResponse;
 import com.backend.demo.dto.response.UserResponse;
+import com.backend.demo.exception.ResourceNotFoundException;
 import com.backend.demo.model.entity.Role;
 import com.backend.demo.model.entity.User;
 import com.backend.demo.model.entity.UserAction;
@@ -12,7 +13,7 @@ import com.backend.demo.repository.RoleRepository;
 import com.backend.demo.repository.UserActionRepository;
 import com.backend.demo.repository.UserRepository;
 import com.backend.demo.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,10 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
 
     private static final int MAX_FAILED_ATTEMPTS = 5;
@@ -61,9 +62,8 @@ public class UserServiceImpl implements IUserService {
         return mapToResponse(saved);
     }
 
-    // ─────────────────────────────────────────────
-    // RF04 - Listar, filtrar y paginar
-    // ─────────────────────────────────────────────
+    // LISTAR
+
     @Override
     @Transactional(readOnly = true)
     public Page<UserResponse> getAllUsers(String nombre, String apellido, Pageable pageable) {
@@ -71,32 +71,18 @@ public class UserServiceImpl implements IUserService {
                 .map(this::mapToResponse);
     }
 
-    // ─────────────────────────────────────────────
-    // RF05 - Gestión de usuarios
-    // ─────────────────────────────────────────────
+
+    // BUSCAR POR ID
+
     @Override
     @Transactional(readOnly = true)
     public UserResponse getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
-        return mapToResponse(user);
+        return mapToResponse(findUserById(id));
     }
 
+    // ASIGNACIÓN DE ROLES
     @Override
-    public UserResponse updateUser(Long id, UpdateUserRequest request) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
-
-        if (request.getNombre()   != null) user.setNombre(request.getNombre());
-        if (request.getApellido() != null) user.setApellido(request.getApellido());
-        if (request.getTelefono() != null) user.setTelefono(request.getTelefono());
-
-        if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
-            if (userRepository.existsByEmail(request.getEmail())) {
-                throw new RuntimeException("El correo ya está en uso");
-            }
-            user.setEmail(request.getEmail());
-        }
+    public UserResponse assignRoles(Long id, Set<String> roleNames) {
 
         User updated = userRepository.save(user);
         registrarAccion(updated, "ACTUALIZAR", "Datos del usuario actualizados");
@@ -158,13 +144,7 @@ public class UserServiceImpl implements IUserService {
         return mapToResponse(updated);
     }
 
-    // ─────────────────────────────────────────────
-    // RF07 - Validar correo único
-    // ─────────────────────────────────────────────
-    @Override
-    @Transactional(readOnly = true)
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+        return mapToResponse(userRepository.save(user));
     }
 
     // ─────────────────────────────────────────────
@@ -235,7 +215,7 @@ public class UserServiceImpl implements IUserService {
         response.setRoles(
                 user.getRoles().stream()
                         .map(r -> r.getName().name())
-                        .collect(Collectors.toSet())
+                        .collect(java.util.stream.Collectors.toSet())
         );
         return response;
     }

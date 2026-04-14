@@ -19,7 +19,7 @@ public class AuthController {
     final private IAuthService authService;
     private final IUserService usuarioService;
 
-    @PostMapping("/signin")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             LoginResponse response = authService.login(loginRequest);

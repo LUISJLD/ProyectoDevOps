@@ -1,5 +1,4 @@
-package com.backend.demo.dto;
-
+package com.backend.demo.dto.passwordreset;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-    private String name;
+public class ForgotPasswordRequest {
     private String email;
 }

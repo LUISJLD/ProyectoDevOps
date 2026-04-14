@@ -40,7 +40,7 @@ public class UserController {
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) ERole rol,
             Pageable pageable) {
-        return ResponseEntity.ok(userService.getAllUsers(nombre, rol, pageable));
+        return ResponseEntity.ok(userService.getAllUsers(nombre, rol != null ? rol.name() : null, pageable));
     }
 
     @GetMapping("/{id}")
@@ -48,12 +48,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(
-            @PathVariable Long id,
-            @RequestBody UpdateUserRequest request) {
-        return ResponseEntity.ok(userService.updateUser(id, request));
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
@@ -78,9 +72,6 @@ public class UserController {
         return ResponseEntity.ok(userService.assignRoles(id, request.getRoles()));
     }
 
-    @GetMapping("/{id}/history")
-    public ResponseEntity<List<UserActionResponse>> getHistory(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserActionHistory(id));
-    }
+
 
 }

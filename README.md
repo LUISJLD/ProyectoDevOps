@@ -5,10 +5,11 @@
 🔗 https://github.com/LUISJLD/ProyectoDevOps.git
 
 ## Integrantes
-- Juan Pablo Tamara
+- Juan Pablo Támara
 - Daniel Bocachica
 - Jeferson Flórez
 - Luis David Pérez
+- Javier Figueroa
 
 ---
 

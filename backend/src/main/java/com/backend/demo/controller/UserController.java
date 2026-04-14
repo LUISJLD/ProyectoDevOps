@@ -1,7 +1,6 @@
 package com.backend.demo.controller;
 
 import com.backend.demo.dto.request.AssignRolesRequest;
-import com.backend.demo.dto.request.LoginRequest;
 import com.backend.demo.dto.request.RegisterRequest;
 import com.backend.demo.dto.request.UpdateUserRequest;
 import com.backend.demo.dto.response.UserResponse;

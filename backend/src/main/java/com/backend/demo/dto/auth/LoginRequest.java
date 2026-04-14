@@ -1,4 +1,4 @@
-package com.backend.demo.dto.request;
+package com.backend.demo.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

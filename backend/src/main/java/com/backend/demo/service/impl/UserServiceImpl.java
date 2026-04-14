@@ -2,11 +2,15 @@ package com.backend.demo.service.impl;
 
 import com.backend.demo.dto.request.RegisterRequest;
 import com.backend.demo.dto.request.UpdateUserRequest;
+import com.backend.demo.dto.response.UserActionResponse;
 import com.backend.demo.dto.response.UserResponse;
 import com.backend.demo.exception.ResourceNotFoundException;
 import com.backend.demo.model.entity.Role;
 import com.backend.demo.model.entity.User;
+import com.backend.demo.model.entity.UserAction;
+import com.backend.demo.model.enums.ERole;
 import com.backend.demo.repository.RoleRepository;
+import com.backend.demo.repository.UserActionRepository;
 import com.backend.demo.repository.UserRepository;
 import com.backend.demo.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -23,14 +29,17 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private static final int MAX_FAILED_ATTEMPTS = 5;
 
+    @Autowired private UserRepository userRepository;
+    @Autowired private RoleRepository roleRepository;
+    @Autowired private UserActionRepository userActionRepository;
 
-    // REGISTRO
+    // ─────────────────────────────────────────────
+    // RF01 - Registro
+    // ─────────────────────────────────────────────
     @Override
     public UserResponse register(RegisterRequest request) {
-
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("El correo ya está registrado: " + request.getEmail());
         }
@@ -44,7 +53,13 @@ public class UserServiceImpl implements IUserService {
         user.setActivo(true);
         user.setFechaCreacion(LocalDateTime.now());
 
-        return mapToResponse(userRepository.save(user));
+        Role defaultRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Rol USER no encontrado"));
+        user.setRoles(Set.of(defaultRole));
+
+        User saved = userRepository.save(user);
+        registrarAccion(saved, "REGISTRO", "Usuario registrado en el sistema");
+        return mapToResponse(saved);
     }
 
     // LISTAR
@@ -69,36 +84,126 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserResponse assignRoles(Long id, Set<String> roleNames) {
 
-        User user = findUserById(id);
+        User updated = userRepository.save(user);
+        registrarAccion(updated, "ACTUALIZAR", "Datos del usuario actualizados");
+        return mapToResponse(updated);
+    }
 
-        Set<Role> roles = roleNames.stream()
-                .map(name -> {
-                    try {
-                        com.backend.demo.model.enums.ERole eRole =
-                                com.backend.demo.model.enums.ERole.valueOf("ROLE_" + name.toUpperCase());
+    @Override
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+        registrarAccion(user, "ELIMINAR", "Usuario eliminado del sistema");
+        userRepository.delete(user);
+    }
 
-                        return roleRepository.findByName(eRole)
-                                .orElseThrow(() ->
-                                        new RuntimeException("Rol no encontrado: " + name));
+    @Override
+    public UserResponse activateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+        user.setActivo(true);
+        User updated = userRepository.save(user);
+        registrarAccion(updated, "ACTIVAR", "Cuenta de usuario activada");
+        return mapToResponse(updated);
+    }
 
-                    } catch (IllegalArgumentException e) {
-                        throw new RuntimeException("Rol no válido: " + name);
-                    }
-                })
-                .collect(java.util.stream.Collectors.toSet());
+    @Override
+    public UserResponse deactivateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+        user.setActivo(false);
+        User updated = userRepository.save(user);
+        registrarAccion(updated, "DESACTIVAR", "Cuenta de usuario desactivada");
+        return mapToResponse(updated);
+    }
+
+    // ─────────────────────────────────────────────
+    // RF06 - Asignar roles
+    // ─────────────────────────────────────────────
+    @Override
+    public UserResponse assignRoles(Long id, Set<String> roleNames) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+
+        Set<Role> roles = new HashSet<>();
+        for (String name : roleNames) {
+            ERole eRole;
+            try {
+                eRole = ERole.valueOf("ROLE_" + name.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Rol no válido: " + name);
+            }
+            Role role = roleRepository.findByName(eRole)
+                    .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + name));
+            roles.add(role);
+        }
 
         user.setRoles(roles);
+        User updated = userRepository.save(user);
+        registrarAccion(updated, "ASIGNAR_ROLES", "Roles asignados: " + roleNames);
+        return mapToResponse(updated);
+    }
 
         return mapToResponse(userRepository.save(user));
     }
-    private User findUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Usuario no encontrado con ID: " + id));
+
+    // ─────────────────────────────────────────────
+    // RF08 - Bloqueo por intentos fallidos
+    // ─────────────────────────────────────────────
+    @Override
+    public void registerFailedAttempt(String email) {
+        userRepository.findByEmail(email).ifPresent(user -> {
+            int attempts = user.getFailedAttempts() + 1;
+            user.setFailedAttempts(attempts);
+            if (attempts >= MAX_FAILED_ATTEMPTS) {
+                user.setLocked(true);
+                user.setLockTime(LocalDateTime.now());
+                registrarAccion(user, "BLOQUEAR", "Cuenta bloqueada por " + attempts + " intentos fallidos");
+            } else {
+                registrarAccion(user, "INTENTO_FALLIDO", "Intento fallido " + attempts + " de " + MAX_FAILED_ATTEMPTS);
+            }
+            userRepository.save(user);
+        });
     }
 
+    @Override
+    public void unlockAccount(String email) {
+        userRepository.findByEmail(email).ifPresent(user -> {
+            user.setLocked(false);
+            user.setFailedAttempts(0);
+            user.setLockTime(null);
+            userRepository.save(user);
+            registrarAccion(user, "DESBLOQUEAR", "Cuenta desbloqueada");
+        });
+    }
 
-    // MAPPER
+    // ─────────────────────────────────────────────
+    // RF09 - Historial de acciones
+    // ─────────────────────────────────────────────
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserActionResponse> getUserActionHistory(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("Usuario no encontrado con ID: " + userId);
+        }
+        return userActionRepository.findByUserIdOrderByFechaDesc(userId)
+                .stream()
+                .map(this::mapActionToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // ─────────────────────────────────────────────
+    // Métodos privados
+    // ─────────────────────────────────────────────
+    private void registrarAccion(User user, String tipo, String descripcion) {
+        UserAction action = new UserAction();
+        action.setUser(user);
+        action.setTipo(tipo);
+        action.setDescripcion(descripcion);
+        action.setFecha(LocalDateTime.now());
+        userActionRepository.save(action);
+    }
+
     private UserResponse mapToResponse(User user) {
         UserResponse response = new UserResponse();
         response.setId(user.getId());
@@ -112,6 +217,15 @@ public class UserServiceImpl implements IUserService {
                         .map(r -> r.getName().name())
                         .collect(java.util.stream.Collectors.toSet())
         );
+        return response;
+    }
+
+    private UserActionResponse mapActionToResponse(UserAction action) {
+        UserActionResponse response = new UserActionResponse();
+        response.setId(action.getId());
+        response.setTipo(action.getTipo());
+        response.setDescripcion(action.getDescripcion());
+        response.setFecha(action.getFecha());
         return response;
     }
 }

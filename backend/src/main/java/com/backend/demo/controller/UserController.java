@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.backend.demo.dto.response.UserActionResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -67,4 +69,10 @@ public class UserController {
             @RequestBody AssignRolesRequest request) {
         return ResponseEntity.ok(userService.assignRoles(id, request.getRoles()));
     }
+
+    @GetMapping("/{id}/history")
+    public ResponseEntity<List<UserActionResponse>> getHistory(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserActionHistory(id));
+    }
+
 }

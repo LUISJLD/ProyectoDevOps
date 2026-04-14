@@ -4,6 +4,7 @@ import com.backend.demo.dto.request.AssignRolesRequest;
 import com.backend.demo.dto.request.RegisterRequest;
 import com.backend.demo.dto.request.UpdateUserRequest;
 import com.backend.demo.dto.response.UserResponse;
+import com.backend.demo.model.enums.ERole;
 import com.backend.demo.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,14 @@ public class UserController {
             @RequestParam(required = false) String apellido,
             Pageable pageable) {
         return ResponseEntity.ok(userService.getAllUsers(nombre, apellido, pageable));
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<UserResponse>> getAllWithRol(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) ERole rol,
+            Pageable pageable) {
+        return ResponseEntity.ok(userService.getAllUsers(nombre, rol, pageable));
     }
 
     @GetMapping("/{id}")

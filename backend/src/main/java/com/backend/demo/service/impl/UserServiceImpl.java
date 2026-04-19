@@ -3,6 +3,7 @@ package com.backend.demo.service.impl;
 import com.backend.demo.dto.request.RegisterRequest;
 import com.backend.demo.dto.request.UpdateUserRequest;
 import com.backend.demo.dto.response.UserResponse;
+import com.backend.demo.exception.EmailAlreadyExistsException;
 import com.backend.demo.exception.ResourceNotFoundException;
 import com.backend.demo.model.entity.Role;
 import com.backend.demo.model.entity.User;
@@ -12,11 +13,13 @@ import com.backend.demo.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -25,6 +28,7 @@ public class UserServiceImpl implements IUserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     // REGISTRO
@@ -40,7 +44,7 @@ public class UserServiceImpl implements IUserService {
         user.setApellido(request.getApellido());
         user.setTelefono(request.getTelefono());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setActivo(true);
         user.setFechaCreacion(LocalDateTime.now());
 

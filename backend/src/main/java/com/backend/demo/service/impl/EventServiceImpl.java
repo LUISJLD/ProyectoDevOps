@@ -2,6 +2,8 @@ package com.backend.demo.service.impl;
 
 import com.backend.demo.dto.request.CreateEventRequest;
 import com.backend.demo.dto.response.EventResponse;
+import com.backend.demo.exception.BadRequestException;
+import com.backend.demo.exception.ResourceNotFoundException;
 import com.backend.demo.model.entity.Event;
 import com.backend.demo.model.entity.User;
 import com.backend.demo.model.enums.EventStatus;
@@ -95,6 +97,54 @@ public class EventServiceImpl implements IEventService {
             throw new RuntimeException("Evento no encontrado con ID: " + id);
         }
         eventRepository.deleteById(id);
+    }
+
+    @Override
+    public EventResponse updateEventStatus(Long id, EventStatus newStatus) {
+        Event event = findEventById(id);
+        EventStatus current = event.getEstado();
+        validateStatusTransition(current, newStatus);
+        event.setEstado(newStatus);
+        return mapToResponse(eventRepository.save(event));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EventResponse> getEventsByStatus(EventStatus estado) {
+        return eventRepository.findByEstado(estado)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    private Event findEventById(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Evento no encontrado con ID: " + id));
+    }
+
+    private void validateStatusTransition(EventStatus current, EventStatus next) {
+        if (current == next) {
+            throw new BadRequestException(
+                    "El evento ya se encuentra en estado: " + current);
+        }
+        switch (current) {
+            case DRAFT -> {
+                if (next != EventStatus.PUBLISHED && next != EventStatus.CANCELLED) {
+                    throw new BadRequestException(
+                            "Desde DRAFT solo se puede pasar a PUBLISHED o CANCELLED. Estado solicitado: " + next);
+                }
+            }
+            case PUBLISHED -> {
+                if (next != EventStatus.CLOSED && next != EventStatus.CANCELLED) {
+                    throw new BadRequestException(
+                            "Desde PUBLISHED solo se puede pasar a CLOSED o CANCELLED. Estado solicitado: " + next);
+                }
+            }
+            case CLOSED, CANCELLED -> throw new BadRequestException(
+                    "El evento en estado " + current + " es terminal y no puede cambiar de estado.");
+            default -> throw new BadRequestException("Estado desconocido: " + current);
+        }
     }
 
     private EventResponse mapToResponse(Event event) {

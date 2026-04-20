@@ -2,17 +2,17 @@ package com.backend.demo.model.entity;
 
 import com.backend.demo.model.enums.ERole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
 @Table(name = "roles")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class Role {
 
     @Id

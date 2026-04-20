@@ -1,13 +1,19 @@
 package com.backend.demo.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "password_reset_tokens")
-@Data
+@ToString(exclude = "user")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class PasswordResetToken {
 
     @Id

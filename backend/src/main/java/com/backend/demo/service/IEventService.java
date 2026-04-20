@@ -15,4 +15,6 @@ public interface IEventService {
     List<EventResponse> getEventsByUser(Long userId);
     EventResponse updateEvent(Long id, CreateEventRequest request);
     void deleteEvent(Long id);
+    EventResponse updateEventStatus(Long id, EventStatus newStatus);
+    List<EventResponse> getEventsByStatus(EventStatus estado);
 }

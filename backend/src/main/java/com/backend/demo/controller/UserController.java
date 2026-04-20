@@ -6,6 +6,11 @@ import com.backend.demo.dto.request.UpdateUserRequest;
 import com.backend.demo.dto.response.UserResponse;
 import com.backend.demo.model.enums.ERole;
 import com.backend.demo.service.IUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +27,17 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+    @Operation(
+            summary = "Registrar nuevo usuario (US01)",
+            description = "Crea una cuenta con nombre, apellido, teléfono, email y contraseña cifrada con BCrypt"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Campos inválidos o faltantes"),
+            @ApiResponse(responseCode = "409", description = "El email ya está registrado")
+    })
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(request));
     }
 

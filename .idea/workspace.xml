@@ -4,19 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7650c2f4-2bee-4cee-9063-490fedee740b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/IntelliLang.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/dto/request/UpdateEventStatusRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="7650c2f4-2bee-4cee-9063-490fedee740b" name="Changes" comment="Implementación de US15 - Estados del Evento">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/controller/EventController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/controller/EventController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/model/enums/EventStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/model/enums/EventStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/service/IEventService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/service/IEventService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/service/impl/EventServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/service/impl/EventServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/dto/request/RegisterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/dto/request/RegisterRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/dto/request/UpdateEventStatusRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/dto/request/UpdateEventStatusRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/backend/demo/service/impl/UserServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="develop" />
+        <entry key="$PROJECT_DIR$" value="feature/event-status" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -44,18 +37,21 @@
     &quot;assignee&quot;: &quot;Atwodd&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/LUISJLD/ProyectoDevOps.git&quot;,
-    &quot;accountId&quot;: &quot;c27803ab-939a-411f-9163-68218ec37ac1&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/LUISJLD/ProyectoDevOps.git",
+    "accountId": "e77a7b56-cba4-49bc-81a5-9bbad5cb5198"
   }
-}</component>
+}]]></component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
         <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
       </MavenGeneralSettings>
     </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
@@ -72,7 +68,7 @@
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "feature/event-status",
+    "git-widget-placeholder": "feature/us01-registro",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/ESTUDIANTE/OneDrive/Desktop/DevOps/ProyectoDevOps/backend",
@@ -91,11 +87,24 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1775594272281</updated>
-      <workItem from="1776631404055" duration="3733000" />
+      <workItem from="1776631404055" duration="5416000" />
     </task>
+    <task id="LOCAL-00001" summary="Implementación de US15 - Estados del Evento">
+      <option name="closed" value="true" />
+      <created>1776635601652</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1776635601652</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Implementación de US15 - Estados del Evento" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementación de US15 - Estados del Evento" />
   </component>
 </project>

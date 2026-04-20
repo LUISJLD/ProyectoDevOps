@@ -4,7 +4,7 @@ import com.backend.demo.model.enums.EventStatus;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * US15 - Request para actualizar únicamente el estado de un evento.
+ * US15 - DTO para actualizar únicamente el estado de un evento.
  * Se usa en PATCH /api/events/{id}/status
  */
 public class UpdateEventStatusRequest {

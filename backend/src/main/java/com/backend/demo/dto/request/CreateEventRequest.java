@@ -2,9 +2,16 @@ package com.backend.demo.dto.request;
 
 import com.backend.demo.model.enums.EventStatus;
 import jakarta.validation.constraints.*;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreateEventRequest {
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -31,7 +38,7 @@ public class CreateEventRequest {
     @Max(value = 100000, message = "La capacidad no puede superar 100.000")
     private Integer capacidadMaxima;
 
-    private boolean parkingAvailable = false;
+    private Boolean parkingAvailable;
 
     @Min(value = 0, message = "Los cupos de parqueadero no pueden ser negativos")
     private Integer parkingSpots = 0;
@@ -39,25 +46,4 @@ public class CreateEventRequest {
     @NotNull(message = "El ID del creador es obligatorio")
     private Long createdById;
 
-    // Getters y setters
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public LocalDate getFecha() { return fecha; }
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
-    public LocalTime getHora() { return hora; }
-    public void setHora(LocalTime hora) { this.hora = hora; }
-    public String getUbicacion() { return ubicacion; }
-    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
-    public EventStatus getEstado() { return estado; }
-    public void setEstado(EventStatus estado) { this.estado = estado; }
-    public Integer getCapacidadMaxima() { return capacidadMaxima; }
-    public void setCapacidadMaxima(Integer capacidadMaxima) { this.capacidadMaxima = capacidadMaxima; }
-    public boolean isParkingAvailable() { return parkingAvailable; }
-    public void setParkingAvailable(boolean parkingAvailable) { this.parkingAvailable = parkingAvailable; }
-    public Integer getParkingSpots() { return parkingSpots; }
-    public void setParkingSpots(Integer parkingSpots) { this.parkingSpots = parkingSpots; }
-    public Long getCreatedById() { return createdById; }
-    public void setCreatedById(Long createdById) { this.createdById = createdById; }
 }

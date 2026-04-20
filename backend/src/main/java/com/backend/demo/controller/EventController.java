@@ -2,16 +2,16 @@
 package com.backend.demo.controller;
 
 import com.backend.demo.dto.request.CreateEventRequest;
+import com.backend.demo.dto.request.UpdateEventRequest;
 import com.backend.demo.dto.request.UpdateEventStatusRequest;
 import com.backend.demo.dto.response.EventResponse;
 import com.backend.demo.model.enums.EventStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import com.backend.demo.service.IEventService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,10 +22,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
+@RequiredArgsConstructor
 public class EventController {
 
-    @Autowired
-    private IEventService eventService;
+    final private IEventService eventService;
 
     @Operation(summary = "Crear un nuevo evento")
     @ApiResponses({
@@ -102,7 +102,7 @@ public class EventController {
     @PutMapping("/{id}")
     public ResponseEntity<EventResponse> update(
             @PathVariable Long id,
-            @Valid @RequestBody CreateEventRequest request) {
+            @Valid @RequestBody UpdateEventRequest request) {
         return ResponseEntity.ok(eventService.updateEvent(id, request));
     }
 

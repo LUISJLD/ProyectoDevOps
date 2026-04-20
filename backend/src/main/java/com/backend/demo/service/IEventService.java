@@ -1,6 +1,7 @@
 package com.backend.demo.service;
 
 import com.backend.demo.dto.request.CreateEventRequest;
+import com.backend.demo.dto.request.UpdateEventRequest;
 import com.backend.demo.dto.response.EventResponse;
 import com.backend.demo.model.enums.EventStatus;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ public interface IEventService {
     EventResponse getEventById(Long id);
     Page<EventResponse> getAllEvents(String nombre, EventStatus estado, Pageable pageable);
     List<EventResponse> getEventsByUser(Long userId);
-    EventResponse updateEvent(Long id, CreateEventRequest request);
+    EventResponse updateEvent(Long id, UpdateEventRequest request);
     void deleteEvent(Long id);
     EventResponse updateEventStatus(Long id, EventStatus newStatus);
     List<EventResponse> getEventsByStatus(EventStatus estado);

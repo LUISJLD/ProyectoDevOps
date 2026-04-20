@@ -2,16 +2,26 @@ package com.backend.demo.model.entity;
 
 import com.backend.demo.model.enums.EventStatus;
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "events")
+@ToString(exclude = "createdBy")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(nullable = false)
@@ -37,6 +47,7 @@ public class Event {
     private Integer capacidadMaxima;
 
     // Campos de parqueadero
+    @Column(nullable = false)
     private boolean parkingAvailable = false;
     private Integer parkingSpots = 0;
 
@@ -48,7 +59,7 @@ public class Event {
     private LocalDateTime updatedAt;
 
     // Relación con User (creador)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
@@ -64,41 +75,4 @@ public class Event {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    // Getters y setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-
-    public LocalDate getFecha() { return fecha; }
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
-
-    public LocalTime getHora() { return hora; }
-    public void setHora(LocalTime hora) { this.hora = hora; }
-
-    public String getUbicacion() { return ubicacion; }
-    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
-
-    public EventStatus getEstado() { return estado; }
-    public void setEstado(EventStatus estado) { this.estado = estado; }
-
-    public Integer getCapacidadMaxima() { return capacidadMaxima; }
-    public void setCapacidadMaxima(Integer capacidadMaxima) { this.capacidadMaxima = capacidadMaxima; }
-
-    public boolean isParkingAvailable() { return parkingAvailable; }
-    public void setParkingAvailable(boolean parkingAvailable) { this.parkingAvailable = parkingAvailable; }
-
-    public Integer getParkingSpots() { return parkingSpots; }
-    public void setParkingSpots(Integer parkingSpots) { this.parkingSpots = parkingSpots; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-
-    public User getCreatedBy() { return createdBy; }
-    public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
 }

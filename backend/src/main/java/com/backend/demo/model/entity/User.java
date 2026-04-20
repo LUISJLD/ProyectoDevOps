@@ -1,27 +1,26 @@
-// model/entity/User.java
 package com.backend.demo.model.entity;
 
-import com.backend.demo.model.enums.ERole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
 @Table(name = "users")
+@ToString(exclude = "roles")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     private String nombre;
@@ -32,11 +31,14 @@ public class User {
     private String email;
 
     private String password;
+
     private boolean activo = true;
     private boolean locked = false;
     private int failedAttempts = 0;
+
     private LocalDateTime lockTime;
     private LocalDateTime fechaCreacion;
+
     private String resetToken;
     private LocalDateTime resetTokenExpiry;
 
@@ -47,4 +49,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacion = LocalDateTime.now();
+    }
 }

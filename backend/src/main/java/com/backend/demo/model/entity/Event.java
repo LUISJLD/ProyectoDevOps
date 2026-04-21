@@ -75,4 +75,23 @@ public class Event {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+
+    @PrePersist
+    @PreUpdate
+    private void validateParking(){
+        if(!parkingAvailable){
+            //Si no hay parqueaderos => cupos = 0
+            parkingSpots = 0;
+        }else{
+            //Si hay parqueaderos -> Validar
+            if(parkingSpots == null){
+                throw new RuntimeException("Debe indicar los cupos del parqueadero.");
+            }
+
+            if(parkingSpots < 0){
+                throw new RuntimeException("Los cupos no pueden ser negativos.");
+            }
+        }
+    }
 }

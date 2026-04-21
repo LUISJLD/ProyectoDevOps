@@ -28,4 +28,5 @@ public class EventResponse {
     private LocalDateTime updatedAt;
     private Long createdById;
     private String createdByNombre;
+    private String createdByApellido;
 }

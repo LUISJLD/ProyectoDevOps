@@ -29,7 +29,7 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "true"
       JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRATIONMS: ${JWT_EXPIRATION}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
     restart: always
 
 volumes:

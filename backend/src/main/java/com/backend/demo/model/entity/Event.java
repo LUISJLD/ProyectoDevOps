@@ -47,6 +47,10 @@ public class Event {
     @Column(nullable = false, columnDefinition = "INT CHECK (capacidad_maxima > 0)")
     private Integer capacidadMaxima;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer inscritosCount = 0;
+
     // Parqueadero
     @Column(nullable = false)
     @Builder.Default
@@ -66,10 +70,6 @@ public class Event {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
-
-    // =========================
-    // LIFECYCLE CALLBACKS LIMPIOS
-    // =========================
 
     @PrePersist
     protected void onCreate() {
@@ -103,6 +103,20 @@ public class Event {
             throw new IllegalArgumentException(
                     "Los cupos no pueden ser negativos."
             );
+        }
+    }
+
+    public boolean tieneCuposDisponibles() {
+        return this.inscritosCount < this.capacidadMaxima;
+    }
+
+    public void incrementarInscritos() {
+        this.inscritosCount++;
+    }
+
+    public void decrementarInscritos() {
+        if (this.inscritosCount > 0) {
+            this.inscritosCount--;
         }
     }
 }

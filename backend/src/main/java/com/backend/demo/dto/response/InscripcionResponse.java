@@ -12,6 +12,7 @@ public class InscripcionResponse {
     private String eventoNombre;
     private InscripcionStatus estado;
     private LocalDateTime createdAt;
+    private Integer cuposRestantes;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -27,4 +28,6 @@ public class InscripcionResponse {
     public void setEstado(InscripcionStatus estado) { this.estado = estado; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Integer getCuposRestantes() { return cuposRestantes; }
+    public void setCuposRestantes(Integer cuposRestantes) { this.cuposRestantes = cuposRestantes; }
 }

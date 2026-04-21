@@ -1,3 +1,4 @@
+// service/IInscripcionService.java
 package com.backend.demo.service;
 
 import com.backend.demo.dto.request.CreateInscripcionRequest;

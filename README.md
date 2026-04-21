@@ -4,26 +4,27 @@
 
 🔗 https://github.com/LUISJLD/ProyectoDevOps.git
 
+---
+
 ## Integrantes
-- Juan Pablo Támara
-- Daniel Bocachica
-- Jeferson Flórez
-- Luis David Pérez
-- Javier Figueroa
+- Juan Pablo Támara  
+- Daniel Bocachica  
+- Jeferson Flórez  
+- Luis David Pérez  
+- Javier Figueroa  
 
 ---
 
 ## Stack Tecnológico
 
-- **Backend:** Spring Boot
-- **Seguridad:** Spring Security + JWT
-- **Persistencia:** Spring Data JPA (Hibernate)
-- **Base de Datos:** PostgreSQL
-- **Infraestructura BD:** Supabase
-- **Frontend:** React.js
-- **Contenerización:** Docker
-- **Control de Versiones:** Git (GitFlow)
-
+- **Backend:** Spring Boot  
+- **Seguridad:** Spring Security + JWT  
+- **Persistencia:** Spring Data JPA (Hibernate)  
+- **Base de Datos:** PostgreSQL  
+- **Infraestructura BD:** Supabase  
+- **Frontend:** React.js  
+- **Contenerización:** Docker  
+- **Control de Versiones:** Git (GitFlow)  
 
 ---
 
@@ -45,15 +46,25 @@ Además, el equipo cuenta con conocimientos previos en estas tecnologías, lo qu
 
 ## Backlog Inicial (PBIs - Módulo de Usuarios)
 
-1. **PBI 1:** Configuración inicial del proyecto Spring Boot y establecimiento de la conexión con la base de datos.  
-2. **PBI 2:** Creación del modelo de datos para la entidad `User` y su respectiva persistencia.  
-3. **PBI 3:** Implementación del registro de usuarios con almacenamiento seguro de contraseñas (cifrado).  
-4. **PBI 4:** Implementación del inicio de sesión mediante autenticación basada en roles.  
-5. **PBI 5:** Validación de unicidad del correo electrónico y verificación de campos obligatorios.  
-6. **PBI 6:** Implementación de la funcionalidad de activación e inactivación de cuentas de usuario.  
+1. **PBI 1:** Configuración inicial del proyecto Spring Boot y conexión con la base de datos.  
+2. **PBI 2:** Creación del modelo de datos para la entidad `User` y su persistencia.  
+3. **PBI 3:** Registro de usuarios con cifrado de contraseñas.  
+4. **PBI 4:** Inicio de sesión con autenticación basada en roles.  
+5. **PBI 5:** Validación de correo único.  
+6. **PBI 6:** Activación e inactivación de usuarios.  
 
-Los PBIs fueron desglosados en historias de usuario (US) y tareas técnicas (TK), las cuales fueron gestionadas como Issues dentro de GitHub.
-Los PBIs detallados se gestionan en GitHub Projects/Issues.
+---
+
+## Backlog Módulo de Eventos
+
+1. **US08:** Creación de la entidad Evento con persistencia en base de datos.  
+2. **US09:** Registro de eventos con nombre, descripción, fecha, hora y ubicación.  
+3. **US10:** Edición de eventos existentes.  
+4. **US11:** Listado de eventos con filtros y paginación.  
+5. **US12:** Consulta de detalle de un evento.  
+6. **US13:** Definición de capacidad máxima de asistentes.  
+7. **US14:** Configuración de parqueadero y cupos disponibles.  
+8. **US15:** Gestión de estados del evento (DRAFT, PUBLISHED, CLOSED, CANCELLED).  
 
 ---
 

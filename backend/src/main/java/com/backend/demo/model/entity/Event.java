@@ -40,15 +40,19 @@ public class Event {
     private String ubicacion;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     @Column(nullable = false)
     private EventStatus estado = EventStatus.DRAFT;
 
     @Column(nullable = false, columnDefinition = "INT CHECK (capacidad_maxima > 0)")
     private Integer capacidadMaxima;
 
-    // Campos de parqueadero
+    // Parqueadero
     @Column(nullable = false)
+    @Builder.Default
     private boolean parkingAvailable = false;
+
+    @Builder.Default
     private Integer parkingSpots = 0;
 
     // Auditoría
@@ -58,40 +62,47 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    // Relación con User (creador)
+    // Relación con User
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
-    // Se ejecuta antes de persistir
+    // =========================
+    // LIFECYCLE CALLBACKS LIMPIOS
+    // =========================
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        validateParking();
     }
 
-    // Se ejecuta antes de actualizar
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+        validateParking();
     }
 
+    // VALIDACIÓN INTERNA
 
-    @PrePersist
-    @PreUpdate
-    private void validateParking(){
-        if(!parkingAvailable){
-            //Si no hay parqueaderos => cupos = 0
+    private void validateParking() {
+
+        if (!parkingAvailable) {
             parkingSpots = 0;
-        }else{
-            //Si hay parqueaderos -> Validar
-            if(parkingSpots == null){
-                throw new RuntimeException("Debe indicar los cupos del parqueadero.");
-            }
+            return;
+        }
 
-            if(parkingSpots < 0){
-                throw new RuntimeException("Los cupos no pueden ser negativos.");
-            }
+        if (parkingSpots == null) {
+            throw new IllegalArgumentException(
+                    "Debe indicar los cupos del parqueadero."
+            );
+        }
+
+        if (parkingSpots < 0) {
+            throw new IllegalArgumentException(
+                    "Los cupos no pueden ser negativos."
+            );
         }
     }
 }

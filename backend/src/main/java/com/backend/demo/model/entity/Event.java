@@ -43,7 +43,7 @@ public class Event {
     @Column(nullable = false)
     private EventStatus estado = EventStatus.DRAFT;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "INT CHECK (capacidad_maxima > 0)")
     private Integer capacidadMaxima;
 
     // Campos de parqueadero

@@ -34,7 +34,7 @@ public class CreateEventRequest {
     private EventStatus estado;
 
     @NotNull(message = "La capacidad máxima es obligatoria")
-    @Min(value = 1, message = "La capacidad mínima es 1")
+    @Positive(message = "La capacidad debe ser un número positivo")
     @Max(value = 100000, message = "La capacidad no puede superar 100.000")
     private Integer capacidadMaxima;
 

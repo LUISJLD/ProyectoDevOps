@@ -1,0 +1,24 @@
+### Intento Definitivo con cabecera de Túnel (usamos esto para crear un usuario admin y luego probar la creación de eventos con JWT)
+POST https://friendly-pancake-4jqxgr6xq5rx3q6w7-8080.app.github.dev/api/auth/login
+Content-Type: application/json
+User-Agent: rest-client
+X-Forwarded-For: 127.0.0.1
+
+{
+  "email": "admin@test.com",
+  "password": "Admin@123456"
+}
+
+###
+POST https://friendly-pancake-4jqxgr6xq5rx3q6w7-8080.app.github.dev/api/events
+Content-Type: application/json
+Authorization: Bearer TeyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3NjczOTMwNSwiZXhwIjoxNzc2ODI1NzA1fQ._8V3ShrVyN8zZ2IWxbTtF9lsoKs6R797-kWAr86jyyoUzW2GTSOvNKdi8wLbSytbGw3_W9sXCi2T5Oeshp-2vQU_TOKEN_AQUÍ
+
+{
+  "nombre": "Evento de Prueba PIFE",
+  "descripcion": "Probando la integración del backend con JWT",
+  "fecha": "2026-05-15T10:00:00",
+  "ubicacion": "Universidad del Magdalena",
+  "capacidad": 100,
+  "creadorId": 1
+}

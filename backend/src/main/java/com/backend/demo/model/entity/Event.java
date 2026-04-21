@@ -43,7 +43,7 @@ public class Event {
     @Column(nullable = false)
     private EventStatus estado = EventStatus.DRAFT;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "INT CHECK (capacidad_maxima > 0)")
     private Integer capacidadMaxima;
 
     // Campos de parqueadero
@@ -74,5 +74,24 @@ public class Event {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+
+    @PrePersist
+    @PreUpdate
+    private void validateParking(){
+        if(!parkingAvailable){
+            //Si no hay parqueaderos => cupos = 0
+            parkingSpots = 0;
+        }else{
+            //Si hay parqueaderos -> Validar
+            if(parkingSpots == null){
+                throw new RuntimeException("Debe indicar los cupos del parqueadero.");
+            }
+
+            if(parkingSpots < 0){
+                throw new RuntimeException("Los cupos no pueden ser negativos.");
+            }
+        }
     }
 }

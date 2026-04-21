@@ -25,7 +25,6 @@ public class PasswordResetServiceImpl implements IPasswordResetService {
         var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 🔥 OPCIONAL: eliminar tokens anteriores del usuario
         // tokenRepository.deleteByUser(user);
 
         String token = UUID.randomUUID().toString();
@@ -41,9 +40,9 @@ public class PasswordResetServiceImpl implements IPasswordResetService {
 
         String link = "http://localhost:3000/reset-password?token=" + token;
 
-        // 🔥 DEV MODE: imprimir en consola
+        //  imprimir en consola
         System.out.println("=================================");
-        System.out.println("🔐 RESET PASSWORD LINK:");
+        System.out.println(" RESET PASSWORD LINK:");
         System.out.println(link);
         System.out.println("=================================");
     }
@@ -67,7 +66,7 @@ public class PasswordResetServiceImpl implements IPasswordResetService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
-        // 🔥 marcar como usado
+        // marcar como usado
         resetToken.setUsed(true);
         tokenRepository.save(resetToken);
     }

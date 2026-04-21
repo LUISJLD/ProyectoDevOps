@@ -6,6 +6,7 @@ import com.backend.demo.dto.response.EventResponse;
 import com.backend.demo.exception.AccessDeniedException;
 import com.backend.demo.exception.BadRequestException;
 import com.backend.demo.exception.ResourceNotFoundException;
+import com.backend.demo.mapper.EventMapper;
 import com.backend.demo.model.entity.Event;
 import com.backend.demo.model.entity.User;
 import com.backend.demo.model.enums.EventStatus;
@@ -23,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Objects;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +37,7 @@ public class EventServiceImpl implements IEventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final EventMapper eventMapper;
 
     //Crear evento
     @Override
@@ -59,21 +62,21 @@ public class EventServiceImpl implements IEventService {
                 .createdBy(creator)
                 .build();
 
-        return mapToResponse(eventRepository.save(event));
+        return eventMapper.toResponse(eventRepository.save(event));
     }
 
 
     @Override
     @Transactional(readOnly = true)
     public EventResponse getEventById(Long id) {
-        return mapToResponse(findEventById(id));
+        return eventMapper.toResponse(findEventById(id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<EventResponse> getAllEvents(String nombre, EventStatus estado, Pageable pageable) {
         return eventRepository.findByFilters(nombre, estado, pageable)
-                .map(this::mapToResponse);
+                .map(eventMapper::toResponse);
     }
 
     @Override
@@ -86,26 +89,95 @@ public class EventServiceImpl implements IEventService {
 
         return eventRepository.findByCreatedById(userId)
                 .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+                .map(eventMapper::toResponse)
+                .toList();
     }
 
     // Actualizar evento
     @Override
     public EventResponse updateEvent(Long id, UpdateEventRequest request) {
+        Event event = findEventById(id);
+        UserInfoDetail user = getAuthenticatedUser();
+
+        validateEventPermission(event, user, "editar");
+        validateUpdateRules(request);
+        eventMapper.updateEvent(request, event);
+        if (!event.isParkingAvailable()) {
+            event.setParkingSpots(0);
+        }
+        return eventMapper.toResponse(eventRepository.save(event));
+    }
+
+    //Elimina un evento
+    @Override
+    public void deleteEvent(Long id) {
 
         Event event = findEventById(id);
         UserInfoDetail user = getAuthenticatedUser();
 
-        boolean isOwner = event.getCreatedBy().getId().equals(user.getId());
+        validateEventPermission(event, user, "eliminar");
+
+        eventRepository.delete(event);
+    }
+
+    // Actualizar status
+    @Override
+    public EventResponse updateEventStatus(Long id, EventStatus newStatus) {
+
+        // Buscar el evento en BD o lanzar excepción si no existe
+        Event event = findEventById(id);
+
+        // Obtener usuario autenticado desde el contexto de seguridad
+        UserInfoDetail user = getAuthenticatedUser();
+        // Validar permisos (owner o admin)
+        validateEventPermission(event, user, "cambiar el estado");
+
+        // Validar transición de estados permitida
+        validateStatusTransition(event.getEstado(), newStatus);
+
+        //  Actualizar estado del evento
+        event.setEstado(newStatus);
+
+        // Guardar cambios y mapear a respuesta DTO
+        return eventMapper.toResponse(eventRepository.save(event));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EventResponse> getEventsByStatus(EventStatus estado) {
+        return eventRepository.findByEstado(estado)
+                .stream()
+                .map(eventMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    private Event findEventById(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Evento no encontrado con ID: " + id));
+    }
+
+
+    // Valida si un usuario tiene permisos para ejecutar una acción sobre un evento.
+    private void validateEventPermission(Event event, UserInfoDetail user, String action) {
+
+        boolean isOwner = Objects.equals(
+                event.getCreatedBy().getId(),
+                user.getId()
+        );
+
         boolean isAdmin = user.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals(ERole.ROLE_ADMIN.name()));
+                .anyMatch(a -> Objects.equals(a.getAuthority(), ERole.ROLE_ADMIN.name()));
 
         if (!isOwner && !isAdmin) {
-            throw new AccessDeniedException("No autorizado para editar este evento");
+            throw new AccessDeniedException("No autorizado para " + action + " este evento");
         }
+    }
 
-        // Validaciones
+
+    //  Valida las reglas de negocio al actualizar un evento.
+    private void validateUpdateRules(UpdateEventRequest request) {
 
         if (request.getFecha() != null && request.getFecha().isBefore(LocalDate.now())) {
             throw new BadRequestException("La fecha no puede ser pasada");
@@ -124,89 +196,8 @@ public class EventServiceImpl implements IEventService {
                 && request.getParkingSpots() <= 0) {
             throw new BadRequestException("Debe haber al menos un cupo de parqueadero");
         }
-
-        //Seteo
-
-        if (request.getNombre() != null) event.setNombre(request.getNombre());
-        if (request.getDescripcion() != null) event.setDescripcion(request.getDescripcion());
-        if (request.getFecha() != null) event.setFecha(request.getFecha());
-        if (request.getHora() != null) event.setHora(request.getHora());
-        if (request.getUbicacion() != null) event.setUbicacion(request.getUbicacion());
-
-        if (request.getCapacidadMaxima() != null) {
-            event.setCapacidadMaxima(request.getCapacidadMaxima());
-        }
-
-        if (request.getParkingAvailable() != null) {
-            event.setParkingAvailable(request.getParkingAvailable());
-        }
-
-        if (request.getParkingSpots() != null) {
-            event.setParkingSpots(request.getParkingSpots());
-        }
-
-        //Mantener consistencia
-        if (!event.isParkingAvailable()) {
-            event.setParkingSpots(0);
-        }
-
-        return mapToResponse(eventRepository.save(event));
     }
 
-
-    @Override
-    public void deleteEvent(Long id) {
-
-        Event event = findEventById(id);
-        UserInfoDetail user = getAuthenticatedUser();
-
-        boolean isAdmin = user.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals(ERole.ROLE_ADMIN.name()));
-
-        if (!event.getCreatedBy().getId().equals(user.getId()) && !isAdmin) {
-            throw new AccessDeniedException("No autorizado para eliminar este evento");
-        }
-
-        eventRepository.delete(event);
-    }
-
-    // Actualizar status
-    @Override
-    public EventResponse updateEventStatus(Long id, EventStatus newStatus) {
-
-        Event event = findEventById(id);
-        UserInfoDetail user = getAuthenticatedUser();
-
-        boolean isOwner = event.getCreatedBy().getId().equals(user.getId());
-        boolean isAdmin = user.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals(ERole.ROLE_ADMIN.name()));
-
-        if (!isOwner && !isAdmin) {
-            throw new AccessDeniedException("No autorizado para cambiar el estado");
-        }
-
-        validateStatusTransition(event.getEstado(), newStatus);
-
-        event.setEstado(newStatus);
-
-        return mapToResponse(eventRepository.save(event));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<EventResponse> getEventsByStatus(EventStatus estado) {
-        return eventRepository.findByEstado(estado)
-                .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-
-    private Event findEventById(Long id) {
-        return eventRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Evento no encontrado con ID: " + id));
-    }
 
     private UserInfoDetail getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -214,10 +205,10 @@ public class EventServiceImpl implements IEventService {
         if (authentication == null || !(authentication.getPrincipal() instanceof UserInfoDetail user)) {
             throw new AccessDeniedException("Usuario no autenticado");
         }
-
         return user;
     }
 
+    //Valida las transiciones permitidas entre estados de evento.
     private void validateStatusTransition(EventStatus current, EventStatus next) {
 
         if (current == next) {
@@ -238,27 +229,5 @@ public class EventServiceImpl implements IEventService {
             case CLOSED, CANCELLED ->
                     throw new BadRequestException("Estado terminal: " + current);
         }
-    }
-
-    private EventResponse mapToResponse(Event event) {
-        return EventResponse.builder()
-                .id(event.getId())
-                .nombre(event.getNombre())
-                .descripcion(event.getDescripcion())
-                .fecha(event.getFecha())
-                .hora(event.getHora())
-                .ubicacion(event.getUbicacion())
-                .estado(event.getEstado())
-                .capacidadMaxima(event.getCapacidadMaxima())
-                .parkingAvailable(event.isParkingAvailable())
-                .parkingSpots(event.getParkingSpots())
-                .createdAt(event.getCreatedAt())
-                .updatedAt(event.getUpdatedAt())
-                .createdById(event.getCreatedBy().getId())
-                .createdByNombre(
-                        event.getCreatedBy().getNombre() + " " +
-                                event.getCreatedBy().getApellido()
-                )
-                .build();
     }
 }

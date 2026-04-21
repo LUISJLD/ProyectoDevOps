@@ -1,8 +1,8 @@
-#  Documentación del Sistema - Módulo de Usuarios
-
+#  Documentación del Sistema 
 ---
+## 1. Módulo de Usuarios
 
-##  1. Requerimientos Funcionales
+##  1.1 Requerimientos Funcionales
 
 ###  Usuario
 
@@ -21,7 +21,7 @@
 
 ---
 
-##  2. Requerimientos No Funcionales
+##  1.2. Requerimientos No Funcionales
 
 ###  Seguridad
 
@@ -47,7 +47,7 @@
 
 ---
 
-## 3. Product Backlog (Historias de Usuario)
+## 1.3. Product Backlog (Historias de Usuario - Usuarios)
 
 | ID   | Historia de Usuario | Prioridad |
 |------|--------------------|----------|
@@ -61,7 +61,7 @@
 
 ---
 
-## 4. Tareas Técnicas
+## 1.4. Tareas Técnicas
 
 | ID   | Tarea | Prioridad |
 |------|------|----------|
@@ -70,7 +70,7 @@
 
 ---
 
-## 5. Definition of Done (DoD)
+## 1.5. Definition of Done (DoD)
 
 Un PBI se considera terminado cuando:
 
@@ -83,14 +83,76 @@ Un PBI se considera terminado cuando:
 
 ---
 
-## 6. Modelo de Base de Datos
+## 1.6. Modelo de Base de Datos
 
 A continuación se muestra el diseño de la base de datos del sistema:
 
 ![Modelo de Base de Datos](../docs/db.png)
 
 ---
-## 7. Arquitectura Tecnológica
+
+## 2. Módulo de Gestión de Eventos y Capacidad Logística
+
+---
+
+##  2.1 Requerimientos Funcionales
+
+###  Organizador
+
+- **RF10:** Crear eventos con nombre, descripción, fecha, hora y ubicación.  
+- **RF11:** Definir capacidad máxima de asistentes por evento.  
+- **RF12:** Indicar si el evento cuenta con parqueadero.  
+- **RF13:** Registrar cantidad de cupos de parqueadero.  
+- **RF14:** Asociar el evento al usuario creador.  
+- **RF15:** Editar eventos existentes.  
+- **RF16:** Consultar listado de eventos.  
+- **RF17:** Consultar detalle de un evento.  
+
+---
+
+##  2.2 Requerimientos No Funcionales
+
+- **RNF06:** Validación de campos obligatorios en eventos.  
+- **RNF07:** Control de acceso por roles (ADMIN / ORGANIZER).  
+- **RNF08:** Persistencia en PostgreSQL.  
+- **RNF09:** APIs REST con respuesta menor a 2 segundos.  
+- **RNF10:** Uso de JWT para autenticación y autorización.  
+
+---
+
+##  2.3 Product Backlog (Historias de Usuario - Eventos)
+
+| ID   | Historia de Usuario | Prioridad |
+|------|--------------------|----------|
+| US08 | Creación de entidad Evento | Alta |
+| US09 | Registro de evento | Alta |
+| US10 | Edición de eventos | Alta |
+| US11 | Listado de eventos | Alta |
+| US12 | Detalle de evento | Alta |
+| US13 | Capacidad máxima | Media |
+| US14 | Parqueadero | Media |
+| US15 | Estados del evento | Media |
+
+---
+
+##  2.4 Definition of Done (DoD - Eventos)
+
+Un PBI de eventos se considera terminado cuando:
+
+- Endpoint funcional en `/api/events`  
+- Validaciones implementadas  
+- Persistencia en PostgreSQL  
+- Relación con usuario creador  
+- Uso de DTOs  
+- Pruebas en Postman / Swagger  
+- Merge a `develop`  
+- Rama `feature/*` utilizada  
+
+---
+
+
+
+## Arquitectura Tecnológica
 
 La arquitectura del sistema sigue un enfoque desacoplado basado en servicios, donde el backend expone una API REST consumida por un frontend independiente.
 
@@ -169,7 +231,9 @@ Esta arquitectura permite una separación clara de responsabilidades, facilitand
 
 ---
 
-##  8. Conclusión
+
+
+## Conclusión
 
 El sistema está diseñado bajo buenas prácticas de desarrollo, seguridad y escalabilidad.  
 Se implementa una arquitectura moderna basada en APIs REST, autenticación segura y control de acceso por roles.

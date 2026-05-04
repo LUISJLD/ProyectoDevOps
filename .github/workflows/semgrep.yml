@@ -18,19 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # En develop NO bloquea
-      - name: Run Semgrep (develop - no bloquea)
-        if: github.ref == 'refs/heads/develop'
-        continue-on-error: true
-        run: |
-          semgrep ci \
-            --config=p/ci \
-            --config=p/java \
-            --config=p/secrets
-
-      # En main SÍ bloquea
-      - name: Run Semgrep (main - bloquea)
-        if: github.ref == 'refs/heads/main'
+      - name: Run Semgrep
+        continue-on-error: ${{ github.ref != 'refs/heads/main' }}
         run: |
           semgrep ci \
             --config=p/ci \

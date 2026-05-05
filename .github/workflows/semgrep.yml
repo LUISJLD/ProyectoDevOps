@@ -1,38 +1,40 @@
-name: Semgrep SAST
+name: Semgrep SAST Analysis
 
 on:
   push:
-    branches: [develop, main]
+    branches:
+      - develop
+      - main
   pull_request:
-    branches: [develop, main]
+    branches:
+      - develop
+      - main
 
 jobs:
-  semgrep:
+  semgrep-develop:
+    name: Semgrep Scan (develop - no bloquea)
     runs-on: ubuntu-latest
-
-    container: returntocorp/semgrep
-
-    env:
-      SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'pull_request' && github.base_ref == 'develop')
+    container:
+      image: semgrep/semgrep
     steps:
       - uses: actions/checkout@v4
-
-      # En develop NO bloquea
-      - name: Run Semgrep (develop - no bloquea)
-        if: github.ref == 'refs/heads/develop'
+      - name: Run Semgrep (develop)
+        run: semgrep ci
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         continue-on-error: true
-        run: |
-          semgrep ci \
-            --config=p/ci \
-            --config=p/java \
-            --config=p/secrets
 
-      # En main SÍ bloquea
-      - name: Run Semgrep (main - bloquea)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          semgrep ci \
-            --config=p/ci \
-            --config=p/java \
-            --config=p/secrets
+  semgrep-main:
+    name: Semgrep Scan (main - bloquea)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.base_ref == 'main')
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Semgrep (main)
+        run: semgrep ci
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        continue-on-error: false

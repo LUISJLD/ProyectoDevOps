@@ -5,7 +5,7 @@
 
 ## Integrantes
 - Juan Pablo Támara
-- Daniel Bocachica
+- Daniel Bocachica Castillo
 - Jeferson Flórez
 - Luis David Pérez
 - Javier Figueroa

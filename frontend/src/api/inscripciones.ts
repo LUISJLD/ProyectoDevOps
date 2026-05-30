@@ -1,5 +1,5 @@
 import { http } from "./http";
-import { Event } from "./eventos";
+import type { Event } from "./eventos";
 
 export type InscripcionResponse = {
     id: number;

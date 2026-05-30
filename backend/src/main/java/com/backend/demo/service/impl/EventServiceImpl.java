@@ -105,7 +105,7 @@ public class EventServiceImpl implements IEventService {
         UserInfoDetail user = getAuthenticatedUser();
 
         validateEventPermission(event, user, "editar");
-        validateUpdateRules(request);
+        validateUpdateRules(request, event);
 
         boolean dateChanged = request.getFecha() != null && !request.getFecha().equals(event.getFecha());
         boolean timeChanged = request.getHora() != null && !request.getHora().equals(event.getHora());
@@ -134,6 +134,10 @@ public class EventServiceImpl implements IEventService {
         UserInfoDetail user = getAuthenticatedUser();
 
         validateEventPermission(event, user, "eliminar");
+
+        if (event.getInscritosCount() > 0) {
+            throw new BadRequestException("No puedes eliminar este evento porque ya tiene personas inscritas. Cancélalo en su lugar.");
+        }
 
         eventRepository.delete(event);
     }
@@ -195,14 +199,19 @@ public class EventServiceImpl implements IEventService {
 
 
     //  Valida las reglas de negocio al actualizar un evento.
-    private void validateUpdateRules(UpdateEventRequest request) {
+    private void validateUpdateRules(UpdateEventRequest request, Event event) {
 
         if (request.getFecha() != null && request.getFecha().isBefore(LocalDate.now())) {
             throw new BadRequestException("La fecha no puede ser pasada");
         }
 
-        if (request.getCapacidadMaxima() != null && request.getCapacidadMaxima() <= 0) {
-            throw new BadRequestException("Capacidad debe ser mayor a 0");
+        if (request.getCapacidadMaxima() != null) {
+            if (request.getCapacidadMaxima() <= 0) {
+                throw new BadRequestException("Capacidad debe ser mayor a 0");
+            }
+            if (request.getCapacidadMaxima() < event.getInscritosCount()) {
+                throw new BadRequestException("La nueva capacidad no puede ser menor a la cantidad actual de inscritos (" + event.getInscritosCount() + ")");
+            }
         }
 
         if (request.getParkingSpots() != null && request.getParkingSpots() < 0) {

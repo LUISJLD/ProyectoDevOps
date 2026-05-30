@@ -20,13 +20,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        try {
-            LoginResponse response = authService.login(loginRequest);
-            return ResponseEntity.ok(response);
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        LoginResponse response = authService.login(loginRequest);
+        return ResponseEntity.ok(response);
     }
 }

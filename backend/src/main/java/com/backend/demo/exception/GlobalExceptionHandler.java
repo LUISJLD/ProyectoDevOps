@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.security.access.AccessDeniedException;
 
 @RestControllerAdvice
 @Slf4j
@@ -30,8 +31,8 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), null);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex) {
+    @ExceptionHandler({com.backend.demo.exception.AccessDeniedException.class, AccessDeniedException.class})
+    public ResponseEntity<ApiError> handleAccessDenied(Exception ex) {
         return buildResponse(HttpStatus.FORBIDDEN, ex.getMessage(), null);
     }
 

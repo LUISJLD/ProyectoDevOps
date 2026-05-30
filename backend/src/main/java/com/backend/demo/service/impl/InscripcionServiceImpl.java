@@ -65,19 +65,29 @@ public class InscripcionServiceImpl implements IInscripcionService {
         validarNoInscritoPreview(usuario.getId(), evento.getId());
 
         if (!evento.tieneCuposDisponibles()) {
-            throw new IllegalStateException("No hay cupos disponibles para este evento");
+            throw new BadRequestException("No hay cupos disponibles para este evento");
         }
 
-        // Generar token UUID único para el QR
-        String qrToken = UUID.randomUUID().toString();
+        Inscripcion inscripcion = inscripcionRepository.findByUsuarioIdAndEventoId(usuario.getId(), evento.getId())
+                .orElse(null);
 
-        Inscripcion inscripcion = Inscripcion.builder()
-                .usuario(usuario)
-                .evento(evento)
-                .estado(InscripcionStatus.CONFIRMADA)
-                .qrToken(qrToken)           // ← persistir token
-                .asistio(false)
-                .build();
+        if (inscripcion != null) {
+            // Reutilizar inscripción cancelada
+            inscripcion.setEstado(InscripcionStatus.CONFIRMADA);
+            inscripcion.setAsistio(false);
+            inscripcion.setCheckinAt(null);
+        } else {
+            // Generar token UUID único para el QR
+            String qrToken = UUID.randomUUID().toString();
+
+            inscripcion = Inscripcion.builder()
+                    .usuario(usuario)
+                    .evento(evento)
+                    .estado(InscripcionStatus.CONFIRMADA)
+                    .qrToken(qrToken)
+                    .asistio(false)
+                    .build();
+        }
 
         evento.incrementarInscritos();
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Event, getEvent, createEvent, updateEvent } from "../api/eventos";
+import { getEvent, createEvent, updateEvent, type Event } from "../api/eventos";
 
 const P = {
     bgMid: "#0f2240",

@@ -66,6 +66,9 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @Version
+    private Long version;
+
     // Relación con User
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", nullable = false)

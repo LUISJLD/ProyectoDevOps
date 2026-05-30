@@ -7,6 +7,7 @@ import {
     type EventStatus,
     type PageResponse,
 } from "../api/eventos";
+import { getInscripcionesByUser } from "../api/inscripciones";
 import { getErrorMessage } from "../api/errorMessage";
 import { useAuth } from "../auth/AuthContext";
 
@@ -108,7 +109,7 @@ const eventStatuses: EventStatus[] = [
 
 export function EventListPage() {
     const navigate = useNavigate();
-    const { isAdmin } = useAuth();
+    const { isAdmin, user } = useAuth();
 
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
@@ -124,6 +125,7 @@ export function EventListPage() {
     const [success, setSuccess] = useState<string | null>(null);
 
     const [registeringId, setRegisteringId] = useState<number | null>(null);
+    const [registeredEventIds, setRegisteredEventIds] = useState<Set<number>>(new Set());
 
     async function load(pageNumber: number = page) {
         setError(null);
@@ -140,6 +142,14 @@ export function EventListPage() {
             });
 
             setData(res);
+
+            if (user?.id) {
+                const insc = await getInscripcionesByUser(user.id, { size: 200 });
+                const activeIds = insc.content
+                    .filter((i) => i.estado === "CONFIRMADA" || i.estado === "ASISTIDA")
+                    .map((i) => i.eventoId);
+                setRegisteredEventIds(new Set(activeIds));
+            }
         } catch (err) {
             setError(getErrorMessage(err));
         } finally {
@@ -1133,7 +1143,8 @@ export function EventListPage() {
                                                             evento.estado !==
                                                                 "PUBLISHED" ||
                                                             registeringId ===
-                                                                evento.id
+                                                                evento.id ||
+                                                            registeredEventIds.has(evento.id)
                                                         }
                                                         style={{
                                                             ...btnPrimary,
@@ -1142,7 +1153,8 @@ export function EventListPage() {
                                                                 evento.estado !==
                                                                     "PUBLISHED" ||
                                                                 registeringId ===
-                                                                    evento.id
+                                                                    evento.id ||
+                                                                registeredEventIds.has(evento.id)
                                                                     ? 0.45
                                                                     : 1,
 
@@ -1150,7 +1162,8 @@ export function EventListPage() {
                                                                 evento.estado !==
                                                                     "PUBLISHED" ||
                                                                 registeringId ===
-                                                                    evento.id
+                                                                    evento.id ||
+                                                                registeredEventIds.has(evento.id)
                                                                     ? "not-allowed"
                                                                     : "pointer",
 
@@ -1161,61 +1174,51 @@ export function EventListPage() {
                                                                 "8px 16px",
                                                         }}
                                                     >
-                                                        {evento.estado !==
-                                                        "PUBLISHED"
+                                                        {evento.estado !== "PUBLISHED"
                                                             ? "No disponible"
-                                                            : registeringId ===
-                                                                evento.id
-                                                                ? "Inscribiendo..."
-                                                                : "Inscribirse →"}
+                                                            : registeredEventIds.has(evento.id)
+                                                                ? "Inscrito"
+                                                                : registeringId === evento.id
+                                                                    ? "Inscribiendo..."
+                                                                    : "Inscribirse →"}
                                                     </button>
 
-                                                    <button
-                                                        onClick={() =>
-                                                            navigate(
-                                                                `/checkin/escanear/${evento.id}`
-                                                            )
-                                                        }
-                                                        style={{
-                                                            ...btnGhost,
+                                                    {isAdmin && (
+                                                        <>
+                                                            <button
+                                                                onClick={() =>
+                                                                    navigate(
+                                                                        `/checkin/escanear/${evento.id}`
+                                                                    )
+                                                                }
+                                                                style={{
+                                                                    ...btnGhost,
+                                                                    fontSize: "13px",
+                                                                    padding: "8px 12px",
+                                                                }}
+                                                            >
+                                                                QR
+                                                            </button>
 
-                                                            fontSize:
-                                                                "13px",
-
-                                                            padding:
-                                                                "8px 12px",
-                                                        }}
-                                                    >
-                                                        QR
-                                                    </button>
-
-                                                    <button
-                                                        onClick={() =>
-                                                            navigate(
-                                                                `/eventos/${evento.id}/reporte`
-                                                            )
-                                                        }
-                                                        style={{
-                                                            ...btnGhost,
-
-                                                            fontSize:
-                                                                "13px",
-
-                                                            padding:
-                                                                "8px 12px",
-
-                                                            color:
-                                                                P.purple,
-
-                                                            background:
-                                                                P.purpleSoft,
-
-                                                            borderColor:
-                                                                "rgba(167,139,250,0.25)",
-                                                        }}
-                                                    >
-                                                        Rep.
-                                                    </button>
+                                                            <button
+                                                                onClick={() =>
+                                                                    navigate(
+                                                                        `/eventos/${evento.id}/reporte`
+                                                                    )
+                                                                }
+                                                                style={{
+                                                                    ...btnGhost,
+                                                                    fontSize: "13px",
+                                                                    padding: "8px 12px",
+                                                                    color: P.purple,
+                                                                    background: P.purpleSoft,
+                                                                    borderColor: "rgba(167,139,250,0.25)",
+                                                                }}
+                                                            >
+                                                                Rep.
+                                                            </button>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </article>
                                         );

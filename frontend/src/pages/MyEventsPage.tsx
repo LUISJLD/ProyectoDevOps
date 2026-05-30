@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { getEventsByUser, deleteEvent, changeEventStatus, Event } from "../api/eventos";
-import { getInscripcionesByUser, cancelInscripcion, InscripcionResponse, getInscripcionQr } from "../api/inscripciones";
+import { getEventsByUser, type Event } from "../api/eventos";
+import { getInscripcionesByUser, cancelInscripcion, getInscripcionQr, type InscripcionResponse } from "../api/inscripciones";
 
 const P = {
     bgMid: "#0f2240",

@@ -69,7 +69,8 @@ public interface InscripcionRepository extends JpaRepository<Inscripcion, Long> 
     List<Inscripcion> findByEventoIdAndEstado(Long eventoId, InscripcionStatus estado);
 
     List<Inscripcion> findByEvento_FechaAndEvento_EstadoAndEstado(LocalDate fecha, EventStatus estado, InscripcionStatus inscripcionStatus);
-    Optional<Inscripcion> findByQrToken(String qrToken);
+    @Query("SELECT i FROM Inscripcion i JOIN FETCH i.usuario JOIN FETCH i.evento WHERE i.qrToken = :qrToken")
+    Optional<Inscripcion> findByQrToken(@Param("qrToken") String qrToken);
 
     /** Devuelve todos los inscritos de un evento (para reporte). */
     @Query("""

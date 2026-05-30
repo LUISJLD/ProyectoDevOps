@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Recordatorio de Evento</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 30px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .header { background-color: #8b5cf6; color: #ffffff; padding: 25px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+        .content { padding: 30px; color: #333333; line-height: 1.6; }
+        .content h2 { color: #8b5cf6; font-size: 20px; margin-top: 0; }
+        .details { background-color: #f8fafc; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .details p { margin: 5px 0; font-size: 15px; }
+        .footer { background-color: #f1f5f9; padding: 20px; text-align: center; color: #64748b; font-size: 13px; border-top: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Recordatorio: Tu evento es pronto</h1>
+        </div>
+        <div class="content">
+            <h2 th:text="'Hola, ' + ${nombre}">Hola, Usuario</h2>
+            <p>Faltan 24 horas (o menos) para el evento <strong th:text="${eventoNombre}">Nombre del Evento</strong> al que te registraste.</p>
+            
+            <div class="details">
+                <p><strong>📅 Fecha:</strong> <span th:text="${fecha}">01/01/2026</span></p>
+                <p><strong>⏰ Hora:</strong> <span th:text="${hora}">10:00</span></p>
+                <p><strong>📍 Ubicación:</strong> <span th:text="${ubicacion}">Lugar</span></p>
+            </div>
+            
+            <p>Recuerda llevar tu código QR (que te enviamos en el correo de confirmación inicial) para poder hacer Check-in en la entrada.</p>
+        </div>
+        <div class="footer">
+            <p>Sistema de Gestión de Eventos &copy; 2026</p>
+        </div>
+    </div>
+</body>
+</html>
